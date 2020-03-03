@@ -1,0 +1,57 @@
+need to keep track of each cell
+Does it have a value or no?
+if it does what is the value?
+if it does not, what are the valid values it could have
+
+ can't just keep a counter of valid values
+2 states exist, can choose a number or cannot choose a number
+need an array of 9 booleans for each cell
+rather than doing this
+
+The value of a filled in cell is either 1-9
+need up to 4 bits
+1 bit to say if the cell has a value
+9 options
+4 to store value
+can use short int to store teh bits
+
+4 right most bits hold value, holding them there makes them easiest to work with
+
+how do you access just the end bits?
+lab 4 with bitwise, this is where masking comes into play
+last 4 bits are the value
+bits 3-12 are for determining the valid values
+bit 1 determines filled in or not
+
+value_mask  = 0x000f
+valid_mask = 0x1ff0
+is_filled_in = 0x8000
+is_0_valid = 0x2000 this is called a kludge, it is a bit of trickery which makes problem solving easier, this has one bit set in a buffer between the filled in and the valid options before option 1, as 0. You can take this number and shift it to the right, you do this to put the one bit in the one position, shift 2, is 2 valid...etc.
+
+only need one 9x9 board of unsigned short ints (uint16_t)
+
+bool isValid(unit16_t cell, uint16_t i)
+{
+return ((cell & (is_0_valid >> i)!=0);
+}
+
+recal & turns off all bits in the cell except the one that tells you iuf this number is valid
+can use this function to check if a choiuce is valid
+this could be wrewritten as a macro
+
+void markInvalid (uint16_t &cell, uint16_t i)
+{
+cell = cell & ~(is_0_valid >> i);
+}
+
+for input, need one character and 2 loops. If it's a dot set row,column to 0, else, board[r][c]=is_filled_in | (ch - '0');
+this is taking the askey value
+if(ch = '.')
+board[r][c]=0;
+else
+board[r][c]=is_filled_in | (ch - '0');
+
+input the askey and subtract 0 form it.
+makring those cells as filled in and assigning the values to there
+It won't be trying to change these
+cannot change any of these values, only the values which you alter fill in as these won't exist in the stack
